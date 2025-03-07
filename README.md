@@ -39,6 +39,9 @@ This application helps architects, engineers, and building designers evaluate an
 - React with javaScript
 - Material UI v5 (UI components)
 - React Charts (data visualization)
+- Axios(for api)
+- React toast(for notifications)
+- React-router(for routing)
 
 ### Backend
 - Node.js + Express.js with Javascript
