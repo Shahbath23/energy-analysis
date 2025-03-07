@@ -8,6 +8,8 @@ import Navbar from '../components/navbar';
 
 const CreateDesign = () => {
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         name: '',
         dimensions: {
@@ -57,9 +59,51 @@ const CreateDesign = () => {
         }
     };
 
+    const validate = () => {
+        const newErrors = {};
+
+        if (!formData.name.trim()) newErrors.name = 'Design name is required.';
+
+        ['north', 'south', 'east', 'west'].forEach((dir) => {
+            if (!formData.dimensions[dir].width) {
+                newErrors[`${dir}Width`] = `${dir} width is required.`;
+            } else if (formData.dimensions[dir].width <= 0) {
+                newErrors[`${dir}Width`] = `${dir} width must be a positive number.`;
+            }
+        
+            if (!formData.dimensions[dir].height) {
+                newErrors[`${dir}Height`] = `${dir} height is required.`;
+            } else if (formData.dimensions[dir].height <= 0) {
+                newErrors[`${dir}Height`] = `${dir} height must be a positive number.`;
+            }
+        
+            if (!formData.wwr[dir] && formData.wwr[dir] !== 0) {
+                newErrors[`${dir}WWR`] = `${dir} WWR is required.`;
+            } else if (formData.wwr[dir] < 0 || formData.wwr[dir] > 1) {
+                newErrors[`${dir}WWR`] = `${dir} WWR must be between 0 and 1.`;
+            }
+        });
+        
+
+        if (!formData.shgc) newErrors.shgc = 'SHGC is required.';
+        if (formData.shgc < 0 || formData.shgc > 1) newErrors.shgc = 'SHGC must be between 0 and 1.';
+
+        if (!formData.skylight.width) newErrors.skylightWidth = 'Skylight width is required.';
+        if (!formData.skylight.height) newErrors.skylightHeight = 'Skylight height is required.';
+        if (formData.skylight.width <= 0) newErrors.skylightWidth = 'Skylight width must be positive.';
+        if (formData.skylight.height <= 0) newErrors.skylightHeight = 'Skylight height must be positive.';
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) {
+            toast.error('Please fix the errors before submitting.');
+            return;
+        }
 
         // Convert string values to numbers where needed
         const dimensions = {
@@ -131,6 +175,8 @@ const CreateDesign = () => {
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 required
+                                error={!!errors.name}
+                                helperText={errors.name}
                             />
                         </Grid>
 
@@ -146,6 +192,8 @@ const CreateDesign = () => {
                                         onChange={(e) => handleChange(e, 'dimensions', dir, 'width')}
                                         type="number"
                                         required
+                                        error={!!errors[`${dir}Width`]}
+                                    helperText={errors[`${dir}Width`]}
                                     />
                                     <TextField
                                         label={`${dir} Height`}
@@ -154,6 +202,8 @@ const CreateDesign = () => {
                                         onChange={(e) => handleChange(e, 'dimensions', dir, 'height')}
                                         type="number"
                                         required
+                                        error={!!errors[`${dir}Height`]}
+                                    helperText={errors[`${dir}Height`]}
                                     />
                                 </Box>
                             ))}
@@ -161,39 +211,43 @@ const CreateDesign = () => {
 
                         {/* WWR (Window-to-Wall Ratio) */}
                         <Grid item xs={12}>
-                            <Typography variant="h6">Window-to-Wall Ratio (0-1)</Typography>
-                            {['north', 'south', 'east', 'west'].map((dir) => (
-                                <TextField
-                                    key={dir}
-                                    label={`${dir} WWR`}
-                                    variant="outlined"
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    max="1"
-                                    value={formData.wwr[dir]}
-                                    onChange={(e) => handleChange(e, 'wwr', dir)}
-                                    fullWidth
-                                    required
-                                />
-                            ))}
-                        </Grid>
+    <Typography variant="h6">Window-to-Wall Ratio (0-1)</Typography>
+    {['north', 'south', 'east', 'west'].map((dir) => (
+        <TextField
+            key={dir}
+            label={`${dir} WWR`}
+            variant="outlined"
+            type="number"
+            step="0.01"
+            min="0"
+            max="1"
+            value={formData.wwr[dir]}
+            onChange={(e) => handleChange(e, 'wwr', dir)}
+            fullWidth
+            required
+            error={!!errors[`${dir}WWR`]}
+            helperText={errors[`${dir}WWR`]}
+        />
+    ))}
+</Grid>
 
-                        {/* SHGC (Solar Heat Gain Coefficient) */}
-                        <Grid item xs={12}>
-                            <TextField
-                                label="SHGC (0-1)"
-                                variant="outlined"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                max="1"
-                                value={formData.shgc}
-                                onChange={(e) => setFormData({ ...formData, shgc: e.target.value })}
-                                fullWidth
-                                required
-                            />
-                        </Grid>
+{/* SHGC (Solar Heat Gain Coefficient) */}
+<Grid item xs={12}>
+    <TextField
+        label="SHGC (0-1)"
+        variant="outlined"
+        type="number"
+        step="0.01"
+        min="0"
+        max="1"
+        value={formData.shgc}
+        onChange={(e) => setFormData({ ...formData, shgc: e.target.value })}
+        fullWidth
+        required
+        error={!!errors.shgc}
+        helperText={errors.shgc}
+    />
+</Grid>
 
                         {/* Skylight (Optional) */}
                         <Grid item xs={12}>
