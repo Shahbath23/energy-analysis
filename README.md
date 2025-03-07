@@ -9,11 +9,8 @@ A full-stack web application that enables users to analyze and compare energy ef
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
 - [API Documentation](#api-documentation)
-- [Project Structure](#project-structure)
-- [System Architecture](#system-architecture)
 - [Calculation Methodology](#calculation-methodology)
 - [User Guide](#user-guide)
-- [Future Enhancements](#future-enhancements)
 
 ## Overview
 
