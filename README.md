@@ -68,7 +68,7 @@ PORT=3090
 MONGODB_URI=mongodb://localhost:27017/building-energy-analysis
 
 # Start the development server
-npm run dev
+nodemon 'indexFile'
 ```
 
 #### Frontend setup
