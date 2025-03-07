@@ -80,12 +80,11 @@ cd ../frontend
 npm install
 
 # Create .env file for API endpoint
-cat > .env << EOL
 REACT_APP_API_URL=http://localhost:3090/api
-EOL
+
 
 # Start the development server
-npm start
+npm run dev
 ```
 
 The application should now be running at `http://localhost:3000`
